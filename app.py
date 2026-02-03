@@ -118,8 +118,8 @@ def process_query(query, mode, img=None):
         "response": response
     })
 
-st.title("Sistema de Recuperación Multimodal")
-st.markdown("Adjunta una imagen o escribe qué deseas buscar")
+st.title("🔎 Sistema de Recuperación Multimodal")
+st.markdown("Adjunta una imagen 🖼️ o escribe qué deseas buscar 👇")
 
 prompt = st.chat_input(
     "Adjunta una imagen o escribe tu búsqueda...",
@@ -127,11 +127,12 @@ prompt = st.chat_input(
     file_type=["jpg", "png"]
 )
 
+
 if prompt:
     text = prompt.text
     files = prompt.files
 
-  
+    # Imagen
     if files:
         image = Image.open(files[0])
         bytes_img = files[0].getvalue()
@@ -142,10 +143,12 @@ if prompt:
             st.session_state.last_image_hash = img_hash
             st.rerun()
 
+    # Texto
     elif text:
         process_query(text, "Texto")
         st.rerun()
 
+# ---------------- CHAT DISPLAY ----------------
 for msg in st.session_state.chat:
     if msg["role"] == "user":
         with st.chat_message("user"):
