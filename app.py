@@ -60,7 +60,7 @@ def describe_user_image(img):
     prompt = "Describe en UNA sola línea qué objeto aparece en esta imagen en español."
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-3.0-flash",
             contents=[prompt, img]
         )
         return response.text.strip()
