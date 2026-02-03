@@ -118,8 +118,8 @@ def process_query(query, mode, img=None):
         "response": response
     })
 
-st.title("🔎 Sistema de Recuperación Multimodal")
-st.markdown("Adjunta una imagen 🖼️ o escribe qué deseas buscar 👇")
+st.title("Sistema de Recuperación Multimodal")
+st.markdown("Adjunta una imagen o escribe qué deseas buscar")
 
 prompt = st.chat_input(
     "Adjunta una imagen o escribe tu búsqueda...",
