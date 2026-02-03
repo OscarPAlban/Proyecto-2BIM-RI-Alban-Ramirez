@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 from PIL import Image
 from sentence_transformers import SentenceTransformer, util
 
-st.set_page_config(page_title="Buscador Visual Multimodal", layout="centered")
+# --- MEJORA: Se cambia de "centered" a "wide" para mayor amplitud ---
+st.set_page_config(page_title="Buscador Visual Multimodal", layout="wide")
 
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
@@ -127,7 +128,6 @@ prompt = st.chat_input(
     file_type=["jpg", "png"]
 )
 
-
 if prompt:
     text = prompt.text
     files = prompt.files
@@ -149,17 +149,21 @@ if prompt:
         st.rerun()
 
 # ---------------- CHAT DISPLAY ----------------
-for msg in st.session_state.chat:
-    if msg["role"] == "user":
-        with st.chat_message("user"):
-            if msg["mode"] == "Imagen":
-                st.image(msg["image"], width=220)
-                st.write(f"**Imagen del usuario:** {msg['image_desc']}")
-            else:
-                st.write(msg["query"])
+# Se envuelve en un contenedor para mantener orden en modo wide
+with st.container():
+    for msg in st.session_state.chat:
+        if msg["role"] == "user":
+            with st.chat_message("user"):
+                if msg["mode"] == "Imagen":
+                    # --- MEJORA: Imagen de usuario más grande ---
+                    st.image(msg["image"], width=350) 
+                    st.write(f"**Imagen del usuario:** {msg['image_desc']}")
+                else:
+                    st.write(msg["query"])
 
-    else:
-        with st.chat_message("assistant"):
-            st.image(msg["image_path"], width=260)
-            st.caption(msg["title"])
-            st.write(msg["response"])
+        else:
+            with st.chat_message("assistant"):
+                # --- MEJORA: Imagen de asistente más grande ---
+                st.image(msg["image_path"], width=450)
+                st.subheader(msg["title"]) # Cambiado caption por subheader para resaltar
+                st.write(msg["response"])
