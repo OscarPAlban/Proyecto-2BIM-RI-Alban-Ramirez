@@ -1,6 +1,6 @@
 # **Sistema de Recuperación de Información Multimodal**
 
-Este proyecto es un asistente inteligente basado en **IA** que permite buscar productos en un inventario utilizando texto o imágenes. Utiliza **CLIP** para el entendimiento visual, **FAISS** para la búsqueda vectorial eficiente y **Gemini 2.0 Flash** para la generación de respuestas contextuales con memoria.
+Este proyecto es un chat de recuperación de la Información Multimodal, que permite buscar productos en un inventario utilizando texto o imágenes. Utiliza **CLIP** para el entendimiento visual, **FAISS** para la búsqueda vectorial eficiente y **Gemini 2.0 Flash** para la generación de respuestas contextuales con memoria.
 
 ---
 
@@ -32,7 +32,7 @@ GOOGLE_API_KEY=TU_LLAVE_AQUI
 * python prep_data.py
 * python indexer.py
 * streamlit run app.py
-* **Opcional** streamlit run reranking_demo.py Para ver el reranking
+* **Opcional: streamlit run reranking_demo.py** (Para ver el reranking)
 
 
 
