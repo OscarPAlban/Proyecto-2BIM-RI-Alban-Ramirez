@@ -8,7 +8,7 @@ import glob
 
 OUTPUT_FOLDER = "images"
 METADATA_FILE = "metadata_clean.pkl"
-MAX_REAL_PRODUCTS = 2000  # ahora sí queremos MUCHOS productos distintos
+MAX_REAL_PRODUCTS = 2000  
 
 datos_examen = [
     {"title": "Silla de Oficina Ergonómica", "category": "Muebles", "q": "office-chair"},
@@ -24,7 +24,7 @@ datos_examen = [
 ]
 
 def preparar_dataset():
-    print("🚀 Extrayendo MUCHOS productos reales desde reviews...")
+    print(" Extrayendo productos ...")
 
     path = kagglehub.dataset_download("datafiniti/consumer-reviews-of-amazon-products")
     csv_files = glob.glob(os.path.join(path, "*.csv"))
@@ -39,21 +39,18 @@ def preparar_dataset():
     df = df.dropna(subset=['image_url'])
     print("Filas con imageURLs:", len(df))
 
-    # 🔑 AGRUPAR POR imageURLs COMPLETO (firma real del producto)
     df_products = (
         df[['title', 'category', 'image_url']]
         .groupby('image_url', as_index=False)
         .first()
     )
 
-    print("🧠 Productos distintos encontrados:", len(df_products))
-
     df_real = df_products.head(MAX_REAL_PRODUCTS).copy()
 
     if not os.path.exists(OUTPUT_FOLDER):
         os.makedirs(OUTPUT_FOLDER)
 
-    print("📸 Descargando imágenes...")
+    print(" Descargando imágenes...")
 
     valid_rows = []
     img_index = 0
@@ -108,9 +105,7 @@ def preparar_dataset():
     df_final = pd.DataFrame(valid_rows)
     df_final.to_pickle(METADATA_FILE)
 
-    print(f"✅ Listo. Imágenes guardadas: {img_index}")
-    print("👉 Ejecuta: python indexer.py")
-
+    print(f" Imágenes guardadas: {img_index}")
 
 if __name__ == "__main__":
     preparar_dataset()

@@ -8,7 +8,6 @@ st.set_page_config(page_title="Demo Re-ranking", layout="wide")
 
 st.title("🔬 Demostración del impacto del Re-ranking")
 
-# ---------- CARGA ----------
 @st.cache_resource
 def load():
     model = SentenceTransformer('clip-ViT-B-32')
@@ -18,16 +17,13 @@ def load():
 
 model, index, df = load()
 
-# ---------- FUNCIÓN BASE FAISS ----------
 def faiss_search(query, k=20):
     q_emb = model.encode([query], normalize_embeddings=True)
     D, I = index.search(q_emb, k)
     candidates = df.iloc[I[0]].copy()
     return candidates, I[0]
 
-# ---------- RE-RANKING REAL (IMAGEN ↔ IMAGEN) ----------
 def rerank_visually(candidates, ids):
-    # Tomamos la PRIMERA imagen como referencia visual
     ref_img = Image.open(f"images/{ids[0]}.jpg")
     ref_emb = model.encode(ref_img, normalize_embeddings=True)
 
@@ -50,7 +46,6 @@ def rerank_visually(candidates, ids):
 
     return candidates.sort_values("rerank_score", ascending=False)
 
-# ---------- UI ----------
 query = st.text_input("Escribe una búsqueda para ver el efecto del re-ranking:", "tablet amazon fire")
 
 if query:

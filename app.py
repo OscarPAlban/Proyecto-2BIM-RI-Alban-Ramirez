@@ -8,14 +8,12 @@ from dotenv import load_dotenv
 from PIL import Image
 from sentence_transformers import SentenceTransformer, util
 
-# ---------------- CONFIG ----------------
 st.set_page_config(page_title="Buscador Visual Multimodal", layout="centered")
 
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 client = genai.Client(api_key=api_key)
 
-# ---------------- CACHE ----------------
 @st.cache_resource
 def load_resources():
     model = SentenceTransformer('clip-ViT-B-32')
@@ -25,14 +23,12 @@ def load_resources():
 
 model, index, df = load_resources()
 
-# ---------------- SESSION ----------------
 if "chat" not in st.session_state:
     st.session_state.chat = []
 
 if "last_image_hash" not in st.session_state:
     st.session_state.last_image_hash = None
 
-# ---------------- SEARCH ----------------
 def search(query_obj, modality='text'):
     if modality == 'text':
         query_emb = model.encode([query_obj], normalize_embeddings=True)
@@ -60,7 +56,6 @@ def search(query_obj, modality='text'):
     candidates.loc[ids, 'score'] = scores.cpu().numpy()
     return candidates.sort_values('score', ascending=False)
 
-# ---------------- GEMINI: DESCRIBE USER IMAGE ----------------
 def describe_user_image(img):
     prompt = "Describe en UNA sola línea qué objeto aparece en esta imagen en español."
     try:
@@ -72,7 +67,6 @@ def describe_user_image(img):
     except:
         return "Objeto no identificado visualmente."
 
-# ---------------- GEMINI: RAG RESPONSE ----------------
 def generate_rag(query, product, mode):
     prompt = f"""
 Eres un sistema de inventario.
@@ -95,7 +89,6 @@ Responde en máximo 4 líneas:
     except Exception as e:
         return str(e)
 
-# ---------------- PROCESS QUERY ----------------
 def process_query(query, mode, img=None):
     user_image_description = None
 
@@ -109,7 +102,6 @@ def process_query(query, mode, img=None):
     img_path = f"images/{top.name}.jpg"
     response = generate_rag(query, top, mode)
 
-    # Usuario
     st.session_state.chat.append({
         "role": "user",
         "query": query,
@@ -126,23 +118,20 @@ def process_query(query, mode, img=None):
         "response": response
     })
 
-# ---------------- UI ----------------
 st.title("🔎 Sistema de Recuperación Multimodal")
 st.markdown("Adjunta una imagen 🖼️ o escribe qué deseas buscar 👇")
 
-# 🔥 CUADRO ÚNICO TIPO CHATGPT
 prompt = st.chat_input(
     "Adjunta una imagen o escribe tu búsqueda...",
     accept_file=True,
     file_type=["jpg", "png"]
 )
 
-# ---------------- INPUT HANDLING ----------------
 if prompt:
     text = prompt.text
     files = prompt.files
 
-    # Imagen
+  
     if files:
         image = Image.open(files[0])
         bytes_img = files[0].getvalue()
@@ -153,12 +142,10 @@ if prompt:
             st.session_state.last_image_hash = img_hash
             st.rerun()
 
-    # Texto
     elif text:
         process_query(text, "Texto")
         st.rerun()
 
-# ---------------- CHAT DISPLAY ----------------
 for msg in st.session_state.chat:
     if msg["role"] == "user":
         with st.chat_message("user"):
