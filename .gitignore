@@ -1,12 +1,9 @@
-# --- Archivos de configuración y secretos (IMPORTANTE) ---
+
 .env
 
-# --- Carpetas de medios ---
 images/
 
-# --- Archivos de datos generados o índices ---
 *.index
 *.pkl
 
-# --- Opcional: Caché de Python (siempre es bueno ponerlo) ---
 __pycache__/
